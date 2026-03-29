@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AboTracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+  <h1>AboTracker</h1>
+  <p class="text-muted">Monatliche Abo‑Kosten im Blick</p>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Gesamt monatlich: <strong>{{ total }} CHF</strong></h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Neues Abo</h5>
+          <form method="post" action="/add">
+            <div class="mb-2">
+              <input class="form-control" name="name" placeholder="Name (z.B. Spotify)" required>
+            </div>
+            <div class="mb-2">
+              <input class="form-control" name="amount" placeholder="Betrag (z.B. 9.99)" required>
+            </div>
+            <div class="mb-2">
+              <select class="form-select" name="interval">
+                <option value="monthly" selected>Monatlich</option>
+                <option value="yearly">Jährlich</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <input class="form-control" name="category" placeholder="Kategorie (z.B. Media)">
+            </div>
+            <div class="mb-2">
+              <textarea class="form-control" name="notes" placeholder="Notizen"></textarea>
+            </div>
+            <button class="btn btn-primary">Hinzufügen</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Abonnements</h5>
+          <ul class="list-group">
+            {% for s in subs %}
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div>
+                <div class="fw-bold">{{ s.name }} <small class="text-muted">({{ s.interval }})</small></div>
+                <div class="small text-muted">{{ s.category }} - {{ s.notes }}</div>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="me-3">{{ '%.2f'|format(s.amount) }} CHF</span>
+                <form method="post" action="/delete/{{ s.id }}" onsubmit="return confirm('löschen?');">
+                  <button class="btn btn-sm btn-outline-danger">Löschen</button>
+                </form>
+              </div>
+            </li>
+            {% else %}
+            <li class="list-group-item">Keine Abonnements</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
