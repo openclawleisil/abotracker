@@ -18,8 +18,8 @@ class Subscription(db.Model):
     def __repr__(self):
         return f"<Subscription {self.name} {self.amount}>"
 
-@app.before_first_request
-def create_tables():
+# Ensure tables exist on startup (avoid relying on server hooks in some envs)
+with app.app_context():
     db.create_all()
 
 @app.route('/')
